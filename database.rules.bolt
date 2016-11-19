@@ -1,0 +1,104 @@
+/*
+ * Entities
+ */
+
+// RGB Color
+type Color {
+    red: Number
+    green: Number
+    blue: Number
+}
+
+// Diagnostic for a node
+type Diagnostic {
+    ip: String
+    hostname: String
+    info: Any
+}
+
+// Lat/Long location
+type Location {
+    lat: String
+    long: String
+}
+
+type Node {
+    location: Location
+    name: String
+    description: String
+    project: String | Null          // Project ID that the node is assigned to
+    online: Boolean | Number        // "Online now" or "Last Online At"
+    color: Color
+
+    // Ensure project ID is for an actual project
+    validate() { root.projects[this.project] != null }
+}
+
+type Project {
+    name: String
+    description: String
+}
+
+
+/*
+ * Paths
+ */
+
+// uid:true for administrators
+path /admins is Boolean[] {
+    // May only read/write if user is administrator
+    read() { isAdmin(auth.uid) }
+    write() { isAdmin(auth.uid) }
+}
+
+// The list of nodes
+path /nodes/{node_id} is Node {
+    // May only write if user is administrator
+    write() { isAdmin(auth.uid) }
+    // Everyone can read
+    read() { true }
+}
+
+// The color of a node may only be written by a project
+// That the node is assigned to
+// (and by admins of course), but that flows down from /nodes
+path /nodes/{node_id}/color {
+    // May only be written by project that the node is assigned to
+    write() { isOwnedByProject(node_id, auth.uid) }
+}
+
+// Node diagnostics may only be written by nodes
+path /diagnostics/{node_id} is Diagnostic {
+    // May only be written by an owning node
+    write() { isNode(node_id) }
+    // May only be read by an admin
+    read() { isAdmin(auth.uid) }
+}
+
+// Projects and administrators may write Projects
+path /projects/{project_id} is Project {
+    // Admins & owning project can write
+    write() { isAdmin(auth.uid) || isProject(project_id) }
+    // Everyone can read
+    read() { true }
+}
+
+/*
+ * Functions
+ */
+
+function isProject(uid) {
+    return auth != null && auth.uid == uid && root.projects[uid] == true;
+}
+
+function isAdmin(uid) {
+    return auth != null && auth.uid == uid && root.admins[uid] == true;
+}
+
+function isNode(uid) {
+    return auth != null && auth.uid == uid && root.nodes[uid] == true;
+}
+
+function isOwnedByProject(node_id, project_id){
+    return isNode(node_id) && isProject(project_id) && root.nodes[node_id].project == project_id;
+}
