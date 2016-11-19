@@ -1,0 +1,97 @@
+{
+  "rules": {
+    "admins": {
+      "$key1": {
+        ".validate": "newData.isBoolean()"
+      },
+      ".validate": "newData.hasChildren()",
+      ".read": "auth != null && auth.uid == auth.uid && root.child('admins').child(auth.uid).val() == true",
+      ".write": "auth != null && auth.uid == auth.uid && newData.parent().child('admins').child(auth.uid).val() == true"
+    },
+    "nodes": {
+      "$node_id": {
+        ".validate": "newData.hasChildren(['location', 'name', 'description', 'online', 'color']) && newData.parent().parent().child('projects').child(newData.child('project').val()).val() != null",
+        "location": {
+          ".validate": "newData.hasChildren(['lat', 'long'])",
+          "lat": {
+            ".validate": "newData.isString()"
+          },
+          "long": {
+            ".validate": "newData.isString()"
+          },
+          "$other": {
+            ".validate": "false"
+          }
+        },
+        "name": {
+          ".validate": "newData.isString()"
+        },
+        "description": {
+          ".validate": "newData.isString()"
+        },
+        "project": {
+          ".validate": "newData.isString()"
+        },
+        "online": {
+          ".validate": "newData.isBoolean() || newData.isNumber()"
+        },
+        "color": {
+          ".validate": "newData.hasChildren(['red', 'green', 'blue'])",
+          "red": {
+            ".validate": "newData.isNumber()"
+          },
+          "green": {
+            ".validate": "newData.isNumber()"
+          },
+          "blue": {
+            ".validate": "newData.isNumber()"
+          },
+          "$other": {
+            ".validate": "false"
+          },
+          ".write": "auth != null && auth.uid == $node_id && newData.parent().parent().parent().child('nodes').child($node_id).val() == true && (auth != null && auth.uid == auth.uid && newData.parent().parent().parent().child('projects').child(auth.uid).val() == true) && newData.parent().parent().parent().child('nodes').child($node_id).child('project').val() == auth.uid"
+        },
+        "$other": {
+          ".validate": "false"
+        },
+        ".read": "true",
+        ".write": "auth != null && auth.uid == auth.uid && newData.parent().parent().child('admins').child(auth.uid).val() == true"
+      }
+    },
+    "diagnostics": {
+      "$node_id": {
+        ".validate": "newData.hasChildren(['ip', 'hostname', 'data'])",
+        "ip": {
+          ".validate": "newData.isString()"
+        },
+        "hostname": {
+          ".validate": "newData.isString()"
+        },
+        "data": {
+          ".validate": "true"
+        },
+        "$other": {
+          ".validate": "false"
+        },
+        ".read": "auth != null && auth.uid == auth.uid && root.child('admins').child(auth.uid).val() == true",
+        ".write": "auth != null && auth.uid == $node_id && newData.parent().parent().child('nodes').child($node_id).val() == true"
+      }
+    },
+    "projects": {
+      "$project_id": {
+        ".validate": "newData.hasChildren(['name', 'description'])",
+        "name": {
+          ".validate": "newData.isString()"
+        },
+        "description": {
+          ".validate": "newData.isString()"
+        },
+        "$other": {
+          ".validate": "false"
+        },
+        ".read": "true",
+        ".write": "auth != null && auth.uid == auth.uid && newData.parent().parent().child('admins').child(auth.uid).val() == true || auth != null && auth.uid == $project_id && newData.parent().parent().child('projects').child($project_id).val() == true"
+      }
+    }
+  }
+}
