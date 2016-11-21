@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { AngularFireModule } from 'angularfire2';
+import { ModalModule, ComponentsHelper } from 'ng2-bootstrap/ng2-bootstrap';
 
 import { AppComponent } from './app.component';
 import { RouterModule } from '@angular/router';
@@ -27,9 +28,10 @@ const firebaseConfig = {
     BrowserModule,
     FormsModule,
     RouterModule.forRoot(appRoutes),
-    AngularFireModule.initializeApp(firebaseConfig)
+    AngularFireModule.initializeApp(firebaseConfig),
+    ModalModule
   ],
-  providers: [],
+  providers: [{ provide: ComponentsHelper, useClass: ComponentsHelper }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
