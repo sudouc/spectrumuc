@@ -51,10 +51,13 @@ path /admins is Boolean[] {
     write() { isAdmin(auth.uid) }
 }
 
-// The list of nodes
+// Individual Nodes
 path /nodes/{node_id} is Node {
     // May only write if user is administrator
     write() { isAdmin(auth.uid) }
+}
+
+path /nodes {
     // Everyone can read
     read() { true }
 }

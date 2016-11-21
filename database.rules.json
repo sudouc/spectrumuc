@@ -54,20 +54,20 @@
         "$other": {
           ".validate": "false"
         },
-        ".read": "true",
         ".write": "auth != null && auth.uid == auth.uid && newData.parent().parent().child('admins').child(auth.uid).val() == true"
-      }
+      },
+      ".read": "true"
     },
     "diagnostics": {
       "$node_id": {
-        ".validate": "newData.hasChildren(['ip', 'hostname', 'data'])",
+        ".validate": "newData.hasChildren(['ip', 'hostname', 'info'])",
         "ip": {
           ".validate": "newData.isString()"
         },
         "hostname": {
           ".validate": "newData.isString()"
         },
-        "data": {
+        "info": {
           ".validate": "true"
         },
         "$other": {
