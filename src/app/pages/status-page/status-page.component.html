@@ -1,0 +1,34 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-xs-12">
+      <h1 class="text-center">{{title}}</h1>
+    </div>
+  </div>
+</div>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-xs-12">
+      <table class="table table-striped">
+        <tr>
+          <th>Name</th>
+          <th>Key</th>
+          <th>Status</th>
+          <th>Color</th>
+          <th>Description</th>
+          <th>Project</th>
+        </tr>
+        <tr *ngFor="let node of nodes">
+          <td>{{node.name}}</td>
+          <td>{{node.$key}}</td>
+          <td>
+            <span *ngIf="node.online === true"><span style="color:green" class="glyphicon glyphicon-ok-sign"></span> Online</span>
+            <span *ngIf="node.online !== true"><span style="color:red" class="glyphicon glyphicon-remove-sign"></span> Seen: {{node.online | date:'medium'}}</span>
+          </td>
+          <td><span class="glyphicon glyphicon-certificate" [style.color]="getRgbColor(node.color)" aria-hidden="true"></span></td>
+          <td>{{node.description}}</td>
+          <td>{{node.project}}</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>

@@ -20,6 +20,8 @@ const firebaseConfig = {
 
 @NgModule({
   declarations: [
+    AppComponent,
+    StatusPageComponent
   ],
   imports: [
     BrowserModule,
